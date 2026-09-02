@@ -198,7 +198,7 @@
 		<!-- Paramètres -->
 		<section class="params">
 			{#each PARAMS as p}
-				{@const cc = ccFor(p.param)}
+				{const cc = ccFor(p.param)}
 				<div class="param">
 					<div class="row">
 						<span class="name">{p.label}{#if cc}<span class="cc">{cc}</span>{/if}</span>
