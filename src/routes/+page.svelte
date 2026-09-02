@@ -17,6 +17,16 @@
 		{ param: 'reverb', label: 'Reverb', min: 0, max: 1, step: 0.01, unit: '' }
 	];
 
+	// --- Numéro(s) de CC assigné(s) à chaque paramètre (déduit de CC_MAP) ---
+	const CC_BY_PARAM = Object.entries(CC_MAP).reduce((acc, [num, cc]) => {
+		(acc[cc.param] ??= []).push(Number(num));
+		return acc;
+	}, {});
+	const ccFor = (param) => {
+		const list = CC_BY_PARAM[param];
+		return list?.length ? 'CC ' + list.join(', ') : '';
+	};
+
 	// --- État réactif (runes Svelte 5) ---
 	let started = $state(false);
 	let filterChannel = $state(-1); // -1 = Omni
@@ -188,9 +198,10 @@
 		<!-- Paramètres -->
 		<section class="params">
 			{#each PARAMS as p}
+				{@const cc = ccFor(p.param)}
 				<div class="param">
 					<div class="row">
-						<span class="name">{p.label}</span>
+						<span class="name">{p.label}{#if cc}<span class="cc">{cc}</span>{/if}</span>
 						<span class="val">
 							{values[p.param] === -Infinity ? '−∞' : Number(values[p.param]).toFixed(p.step < 0.01 ? 3 : 2)}<em>{p.unit}</em>
 						</span>
@@ -397,6 +408,18 @@
 	.name {
 		font-size: 13px;
 		color: #c4bfae;
+		display: inline-flex;
+		align-items: baseline;
+		gap: 7px;
+	}
+	.cc {
+		font-family: ui-monospace, monospace;
+		font-size: 10px;
+		color: #7d827a;
+		border: 1px solid #3a3e45;
+		border-radius: 4px;
+		padding: 0 5px;
+		letter-spacing: 0.02em;
 	}
 	.val {
 		font-family: ui-monospace, monospace;
