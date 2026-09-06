@@ -11,7 +11,7 @@ export class TabBus {
     this.iframeReady = false;
     this.pending = [];            // messages émis avant que l'iframe soit prête
 
-    // --- Garde SSR ---
+    // --- Garde SSR ----
     // SvelteKit exécute ce module côté serveur, où window/document n'existent pas.
     // bus.js instancie le singleton au chargement du module (donc aussi sur le serveur).
     // On ne touche au DOM que dans le navigateur ; le module est ré-évalué côté client
