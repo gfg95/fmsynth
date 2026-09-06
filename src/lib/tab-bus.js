@@ -2,7 +2,7 @@
 export class TabBus {
   constructor(options = {}) {
     this.mode = options.mode || "extension";
-    this.routerUrl = options.routerUrl || "https://router.appmidi.app/bridge";
+    this.routerUrl = options.routerUrl || "https://router.tabmidi.app/bridge";
     this.routerOrigin = this.mode === "iframe" ? new URL(this.routerUrl).origin : null;
     this.apiKey = options.apiKey || null;
 
