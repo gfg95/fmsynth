@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { FMEngine } from '$lib/synth.js';
 	import { parseMidiMessage, noteName, CC_MAP, MIDI } from '$lib/midi.js';
-	import { subscribeMidi, sendMidi } from '$lib/router.js';
+	import { bus } from '$lib/bus.js';
 
 	const engine = new FMEngine();
 
@@ -94,7 +94,8 @@
 		}
 	}
 
-	onMount(() => subscribeMidi(handleMidi));
+	// bus.onMidi renvoie une fonction de désabonnement ; onMount l'utilise comme cleanup
+	onMount(() => bus.onMidi(handleMidi));
 
 	// --- Démarrage audio (geste utilisateur) ---
 	async function startAudio() {
@@ -117,13 +118,13 @@
 		if (!started) return;
 		engine.noteOn(note, 100);
 		activeNotes[note] = true;
-		sendMidi([MIDI.NOTE_ON | outChannel(), note, 100]);
+		bus.sendMidi([MIDI.NOTE_ON | outChannel(), note, 100]);
 	}
 	function release(note) {
 		if (!started) return;
 		engine.noteOff(note);
 		delete activeNotes[note];
-		sendMidi([MIDI.NOTE_OFF | outChannel(), note, 0]);
+		bus.sendMidi([MIDI.NOTE_OFF | outChannel(), note, 0]);
 	}
 
 	// --- Affichage LCD ---
